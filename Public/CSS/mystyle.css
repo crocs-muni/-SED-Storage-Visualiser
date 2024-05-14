@@ -1,0 +1,253 @@
+/* SPDX-License-Identifier: BSD-3-Clause */
+
+*{
+    font-family: "Times New Roman", Times, serif;
+}
+
+header {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    border-bottom: solid 0.5px grey;
+    margin-bottom: 50px;
+}
+
+header > #rightHeader {
+    text-align: right;
+    display: grid;
+    grid-template-rows: 3;
+}
+
+.table-selections {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    border-bottom: solid 0.1px grey;
+}
+
+#devButton, #filterButton, #legendButton {
+    border-radius: 0;
+    border-style: solid 0.1px black;
+    font-size: large;
+    text-align: center;
+}
+
+table {
+    border-collapse: collapse;
+    text-align: center;
+}
+
+.aHighlight {
+    text-decoration: underline;
+}
+
+.devItem {
+    max-width: 33%;
+}
+
+#devList {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    max-height: 200px;
+}
+
+#selectionDiv {
+    overflow-x: auto;
+    background-color: lightgrey;
+}
+
+#selectionDiv > * {
+    padding-bottom: 20px;
+}
+
+#devFile {
+    margin-bottom: 1px;
+    font-size: 13px;
+}
+
+#add-device-button {
+    font-size: 13px;
+}
+
+#manTab, #optTab{
+    display: block;
+    overflow-x: auto;
+    max-width: 100%;
+    min-width: 0%;
+}
+
+#manTab tbody, #optTab tbody{
+    display: inline-block;
+}
+
+#manTab > thead, #optTab > thead {
+    max-width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+#manTab > thead tr, #optTab > thead tr {
+    display: grid
+}
+
+#legendDiv {
+    display: none;
+    background-color: white;
+    position: absolute;
+    z-index: 10;
+    transition: 0.5s;
+    padding: 5px;
+    border: 2px solid;
+}
+
+#legendDiv thead {
+    border: 1px solid;
+}
+
+.dropdownItems {
+    background-color: lightgrey;
+    display: none;
+    position: absolute;
+    z-index: 1;
+    border: solid 1px black;
+    padding: 2px;
+}
+
+#SSCbuttons > button {
+    min-width: 80px;
+    display: block;
+}
+
+.verticalTiles {
+    display: grid;
+    grid-template-rows: auto;
+}
+
+#devsSelection, #filterSelection {
+    display: none;
+    margin-left: 1rem;
+}
+
+td{
+    white-space: normal;
+}
+
+th{
+    border-bottom: 1px solid;
+    border-right: 1px solid;
+}
+
+.cellType{
+    border: 1px solid;
+}
+
+.fsetRow {
+    border-top: 2px solid black;
+    border-bottom: 2px solid black;
+}
+
+#manTab .missingBg{
+    background-color: red;
+}
+
+#optTab .missingBg{
+    background-color: lightcoral;
+}
+
+tbody {
+    border-left: solid 0.1px black;
+    border-right: solid 0.1px black;
+    border-bottom: solid 0.1px black;
+}
+
+tbody td{
+    padding: 10px;
+}
+
+.driveHeader{
+    background-color: lightgrey;
+}
+
+body{
+    margin: 20px;
+}
+
+.darkCol{
+    background-color: darkgrey;
+}
+
+.modal{
+    position: fixed;
+    top: 0pt;
+    right: 0pt;
+    left: 0pt;
+    bottom: 0pt;
+    z-index: -1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+}
+
+.modal-content{
+    padding: 20px;
+    background-color: gainsboro;
+    border-radius: 3px;
+}
+
+.modal.show{
+    opacity: 1;
+    z-index: 20;
+}
+
+.redBg{
+    background-color: red;
+}
+
+.orBg{
+    background-color: orange;
+}
+
+.grBg{
+    background-color: lightgreen
+}
+
+.square{
+    float: left;
+    height: 15px;
+    width: 15px;
+    border: 1px solid black;
+}
+
+.SSCBut {
+    min-width: 80px;
+}
+
+a:visited{
+    text-decoration: none;
+    color: black;
+}
+
+a:link{
+    text-decoration: none;
+    color: black;
+}
+a:hover{
+    text-decoration: underline;
+}
+
+.selectedButton{
+    border: 2px solid black;
+    background-color: gray;
+}
+
+.deselectedButton{
+    border: 1px solid black;
+    border-radius: 4px;
+}
+
+.tiles{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(30%, 1fr));
+}
+
