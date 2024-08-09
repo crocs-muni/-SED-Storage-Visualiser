@@ -3,7 +3,7 @@
 from flask import Flask, request, send_from_directory, render_template, make_response, session
 from datetime import timedelta
 from dotenv import load_dotenv
-import bcrypt, os, json, shutil, re
+import bcrypt, os, json, shutil, re, argparse
 
 app = Flask(__name__)
 
@@ -17,13 +17,16 @@ app.secret_key = os.environ.get("SECRET_KEY")
 admin_name = os.environ.get("ADMIN_NAME")
 pwd = os.environ.get("PASSWORD").encode('utf-8')
 
+# HTTPS header variables to be changed
+strictTransportSecurity = "max-age=31536000; includeSubDomains"
+contentSecurityPolicy = "default-src https: 'unsafe-eval' 'unsafe-inline'; object-src 'none'"
+
 # https://flask.palletsprojects.com/en/3.0.x/web-security/
 app.config.update(
     SESSION_COOKIE_SECURE=True,
     SESSION_COOKIE_HTTPONLY=True,
     SESSION_COOKIE_SAMESITE='Lax',
 )
-
 
 def isDrivePresent(serialNumber: str, firmwareVersion: str):
     filesSaved = os.listdir("./Public/Outputs")
@@ -135,8 +138,8 @@ def isInt(object):
 
 @app.after_request
 def setHeaders(response):
-    response.headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
-    response.headers['Content-Security-Policy'] = "default-src https: 'unsafe-eval' 'unsafe-inline'; object-src 'none'"
+    response.headers['Strict-Transport-Security'] = strictTransportSecurity
+    response.headers['Content-Security-Policy'] = contentSecurityPolicy
     response.headers['X-Content-Type-Options'] = 'nosniff'
     response.headers['X-Frame-Options'] = 'SAMEORIGIN'
     return response
@@ -275,4 +278,15 @@ def outputDelete():
             return 'Provided drive index is not valid', 400
         
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description = 'Application server for SED Storage Visualiser')
+    parser.add_argument('--HTTP', 
+                        help='Launch the server without requirement for HTTPS (just keep in mind that security of authentication relies on HTTPS)',
+                        action="store_true")
+    args = parser.parse_args()
+    if args.HTTP:
+        app.config.update(
+            SESSION_COOKIE_SECURE=False,
+        )
+        strictTransportSecurity = ""
+        contentSecurityPolicy = ""
     app.run('0.0.0.0', port=8000)
