@@ -69,7 +69,10 @@ async function filterByCriteria() {
     let value = document.getElementById("searchDev").value
     if(value) {
         let allCbox = document.getElementById("allDevsCbox");
-        if(allCbox.checked) allCbox.click();
+        if(allCbox.checked) {
+            allCbox.checked = false
+            allCbox.dispatchEvent(new Event('change'))
+        }
         let refs = document.getElementsByClassName("devRef");
         for(let ref of refs){
             if((ref.textContent.toLowerCase().includes(value.toLowerCase()))){
@@ -89,12 +92,14 @@ async function filterByCriteria() {
         
             if(list.includes(cbox.id)){
                 if(!cbox.checked){
-                    cbox.click()
+                    cbox.checked = true
+                    cbox.dispatchEvent(new Event('change'))
                 }
             }
             else {
                 if(cbox.checked) {
-                    cbox.click()
+                    cbox.checked = false
+                    cbox.dispatchEvent(new Event('change'))
                 }
             }
         }
@@ -343,7 +348,7 @@ function populateFilteringSection(){
         const transaction = db.transaction("drives", "readonly");
         const store = transaction.objectStore("drives");
         let devList = document.getElementById("devList");
-        devList.innerHTML = `<div class="devItem"><input type="checkbox" class="devCBox" name="allDevs" checked="true" id="allDevsCbox">All</div>`;
+        devList.innerHTML = `<div class="devItem"><input type="checkbox" name="allDevs" data-cBoxCategory="devCBox" checked="true" id="allDevsCbox">All</div>`;
     
         const request = store.openCursor();
         request.onsuccess = ((event) => {
@@ -361,20 +366,20 @@ function populateFilteringSection(){
                 // Adding listeners to "All" Cboxes has to happen AFTER all of the device CBoxes were created
                 let fSetList = document.getElementById("fSetManList");
                 let fSetSupList = document.getElementById("fSetManSupList");
-                fSetList.innerHTML = `<input type="checkbox" class="manFsetCbox" name="allDevs" checked="true" id="allManFsetCbox">All<br>`;
-                fSetSupList.innerHTML = `<input type="checkbox" class="manFsetSupCbox" id="allManFsetSupCbox">All<br>`;
+                fSetList.innerHTML = `<input type="checkbox" data-cBoxCategory="manFsetCbox" name="allDevs" checked="true" id="allManFsetCbox">All<br>`;
+                fSetSupList.innerHTML = `<input type="checkbox" data-cBoxCategory="manFsetSupCbox" id="allManFsetSupCbox">All<br>`;
                 Object.entries(dis0ManFsets).forEach(([fsetName, values]) => {
-                    fSetList.innerHTML += `<input class="fSetCBox manFsetCbox" id="${fsetName}" type="checkbox" checked="true">${fsetName}</input><br>`
-                    fSetSupList.innerHTML += `<input class="manFsetSupCbox" data-fset="${fsetName}" type="checkbox" onclick=filterBySupportedSSC(this)>${fsetName}</input><br>`
+                    fSetList.innerHTML += `<input class="staticFsetCBox manFsetCbox" data-fset="${fsetName}" id="${fsetName}" type="checkbox" checked="true">${fsetName}</input><br>`
+                    fSetSupList.innerHTML += `<input class="manFsetSupCbox" data-fset="${fsetName}" type="checkbox" onchange=filterBySupportedSSC(this)>${fsetName}</input><br>`
                 });
 
                 fSetList = document.getElementById("fSetOptList");
                 fSetSupList = document.getElementById("fSetOptSupList");
-                fSetList.innerHTML = `<input type="checkbox" class="optFsetCbox" name="allDevs" checked="true" id="allOptFsetCbox">All<br>`;
-                fSetSupList.innerHTML = `<input type="checkbox" class="optFsetSupCbox" id="allOptFsetSupCbox">All<br>`;
+                fSetList.innerHTML = `<input type="checkbox" data-cBoxCategory="optFsetCbox" name="allDevs" checked="true" id="allOptFsetCbox">All<br>`;
+                fSetSupList.innerHTML = `<input type="checkbox" data-cBoxCategory="optFsetSupCbox" id="allOptFsetSupCbox">All<br>`;
                 Object.entries(dis0optFsets).forEach(([fsetName, values]) => {
-                    fSetList.innerHTML += `<input class="fSetCBox optFsetCbox" id="${fsetName}" type="checkbox" checked="true">${fsetName}</input><br>`
-                    fSetSupList.innerHTML += `<input class="optFsetSupCbox" data-fset="${fsetName}" type="checkbox" onclick=filterBySupportedSSC(this)>${fsetName}</input><br>`
+                    fSetList.innerHTML += `<input class="staticFsetCBox optFsetCbox" data-fset="${fsetName}" id="${fsetName}" type="checkbox" checked="true">${fsetName}</input><br>`
+                    fSetSupList.innerHTML += `<input class="optFsetSupCbox" data-fset="${fsetName}" type="checkbox" onchange=filterBySupportedSSC(this)>${fsetName}</input><br>`
                 });
 
                 let allCboxes = ["allDevsCbox", "allManFsetCbox", "allOptFsetCbox", "allManFsetSupCbox", "allOptFsetSupCbox"];
@@ -382,10 +387,12 @@ function populateFilteringSection(){
                     let allBoxEl = document.getElementById(allBox);
                     allBoxEl.onchange = () => {
                         // The self selection has to be here, because this code is evaluated only after the event
-                        let cBoxes = document.querySelectorAll(`.${allBoxEl.classList[0]}`);
+                        let cBoxes = document.querySelectorAll(`.${allBoxEl.dataset.cboxcategory}`);
                         cBoxes.forEach((cBox) => {
                             if(cBox.checked != allBoxEl.checked){
-                                cBox.click();
+                                cBox.checked = allBoxEl.checked
+                                // Because programmatical change doesn't fire the change event
+                                cBox.dispatchEvent(new Event('change'))
                             }
                         });
                     } 
@@ -471,7 +478,7 @@ function renderCBoxes(){
     let devCBoxes = document.getElementsByClassName("devCBox");
     for(let i = 0; i < devCBoxes.length; i++){
         let checkbox = devCBoxes.item(i);
-        checkbox.onclick = () => {
+        checkbox.onchange = () => {
             let devCells = document.getElementsByClassName(checkbox.id);
             for(let j = 0; j < devCells.length; j++){
                 let cell = devCells.item(j);
@@ -486,11 +493,11 @@ function renderCBoxes(){
         }
     }
     // Filtration based on Feature Sets
-    let fSetBoxes = document.getElementsByClassName("fSetCBox");
+    let fSetBoxes = document.getElementsByClassName("staticFsetCBox");
     for(let i = 0; i < fSetBoxes.length; i++){
         let checkbox = fSetBoxes.item(i);
-        checkbox.onclick = () => {
-            let fSetRow = document.getElementsByClassName(checkbox.id);
+        checkbox.onchange = () => {
+            let fSetRow = document.getElementsByClassName(checkbox.dataset.fset);
             for(let j = 0; j < fSetRow.length; j++){
                 let row = fSetRow.item(j);
                 
@@ -680,7 +687,10 @@ async function generateTbody(tableName, featureSet){
 
 function hideDrive(index){
     let cbox = document.querySelector(`[id="d${index}"]`);
-    if(cbox.checked) cbox.click(); 
+    if(cbox.checked) {
+        cbox.checked = false
+        cbox.dispatchEvent(new Event('change'))
+    } 
 }
 
 async function checkDevCompliance(device){
@@ -981,6 +991,26 @@ function openDB(){
     });
 }
 
+function elementIsInDropdown(element) {
+    if(element.classList.contains("dropdownItems") || element.classList.contains("dropDownButton")) {
+        return true
+    }
+    
+    try {
+        while(element.parentNode.classList) {
+            element = element.parentNode
+            if(element.classList.contains("dropdownItems") || element.classList.contains("dropDownButton")) {
+                return true
+            }
+        }
+    } catch (error) {
+        console.error(error)
+        return false
+    }
+
+    return false
+}
+
 window.onload = (() => {
     document.getElementById("searchDev").value = ""
     openDB()
@@ -1017,6 +1047,16 @@ document.getElementById("devButton").addEventListener("click", (event) => {
     }
 
     
+})
+
+document.body.addEventListener("click", (event) => {
+    let element = event.target
+    if(!elementIsInDropdown(element)) {
+        let dropDowns = document.querySelectorAll(`.dropdownItems`)
+        for(let element of dropDowns) {
+            element.style.display = "none"
+        }
+    }
 })
 
 document.getElementById("filterButton").addEventListener("click", (event) => {
