@@ -1,6 +1,6 @@
 {
     "SSC" : "Pyrite",
-    "SSC name" : "Pyrite 2.01",
+    "SSC name" : "Pyrite 1/2",
     "SSC fset" : "Pyrite SSC V2 Feature",
     "mandatory" : {
         "TPer Feature": [
@@ -29,6 +29,13 @@
             {"Initial C_PIN_SID PIN Indicator" : "= 0"},
             {"Behavior of C_PIN_SID PIN upon TPer Revert" : "= 0"}
         ],
+        "Pyrite SSC V1 Feature": [
+            {"Version": ">= 1"},
+            "Base ComID",
+            {"Number of ComIDs": ">= 1"},
+            {"Initial C_PIN_SID PIN Indicator" : "= 0"},
+            {"Behavior of C_PIN_SID PIN upon TPer Revert" : "= 0"}
+        ],
         "Block SID Authentication Feature": [
             {"Version" : ">= 1"},
             "SID Authentication Blocked State",
@@ -49,19 +56,5 @@
     },
 
     "optional" : {
-        "Geometry Feature": [
-            "Version",
-            "ALIGN",
-            "LogicalBlockSize",
-            "AlignmentGranularity",
-            "LowestAlignedLBA"
-        ],
-        "Single User Mode Feature": [
-            "Version",
-            "Number of Locking Objects Supported",
-            "Policy",
-            "All",
-            "Any"
-        ]
     }
 }
