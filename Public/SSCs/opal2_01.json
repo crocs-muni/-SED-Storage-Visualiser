@@ -39,11 +39,16 @@
             {"DataStore table size alignment" : ">= 1"}
         ],
         "PSID feature" :[
-
         ]
     },
 
     "optional" : {
+        "Opal SSC V1 Feature": [
+            "Version",
+            "Base ComID",
+            {"Number of ComIDs" : ">= 1"},
+            "Range Crossing"
+        ],
         "Block SID Authentication Feature": [
             "Version",
             "SID Authentication Blocked State",

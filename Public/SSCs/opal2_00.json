@@ -41,6 +41,12 @@
     },
 
     "optional" : {
+        "Opal SSC V1 Feature": [
+            "Version",
+            "Base ComID",
+            {"Number of ComIDs" : ">= 1"},
+            "Range Crossing"
+        ],
         "Block SID Authentication Feature": [
             "Version",
             "SID Authentication Blocked State",
@@ -68,7 +74,6 @@
             "Data Removal Time for Supported Data Removal Mechanism Bit 2"
         ],
         "PSID feature" :[
-
         ]
     }
 }

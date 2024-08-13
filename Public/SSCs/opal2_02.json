@@ -47,11 +47,16 @@
             "Hardware Reset"
         ],
         "PSID feature" :[
-
         ]
     },
 
     "optional" : {
+        "Opal SSC V1 Feature": [
+            "Version",
+            "Base ComID",
+            {"Number of ComIDs" : ">= 1"},
+            "Range Crossing"
+        ],
         "Geometry Feature": [
             "Version",
             "ALIGN",
