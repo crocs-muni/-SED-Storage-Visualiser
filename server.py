@@ -87,7 +87,7 @@ def saveMetadata(clientJSON : object):
                 os.remove(f"./Public/Metadata/drive{clientJSON['index']}.json")
                 shutil.copy(f"./Public/Metadata/drive{clientJSON['index']}.tmp", f"./Public/Metadata/drive{clientJSON['index']}.json")
                 os.remove(f"./Public/Metadata/drive{clientJSON['index']}.tmp")
-            
+
 
 def removeMetadata(index, mdIndex):
     if(f"drive{index}.json" in os.listdir("./Public/Metadata")):
@@ -121,13 +121,13 @@ def removeDrive(index):
     except OSError as error:
         print(error)
         return False
-    
+
 def isAuthorized():
     if('user' in session):
         return True
     else:
         return False
-    
+
 def isInt(object):
     try:
         int(object)
@@ -219,7 +219,7 @@ def login():
             return '', 200
         else:
             return '', 401
-        
+
 @app.post('/logout')
 def logout():
     session.pop('user', None)
@@ -243,7 +243,7 @@ def metadataActions():
             removeMetadata(clientJSON["index"], clientJSON["mdIndex"])
             print(f"Removed {clientJSON['mdIndex']} metadata from disk d{clientJSON['index']}")
             return '', 200
-        
+
 @app.post('/outputs')
 def addDrive():
     if(not (isAuthorized())):
@@ -262,7 +262,7 @@ def addDrive():
                 print(error)
                 print("Failed to save given JSON")
                 return '', 400
-            
+
 @app.delete('/outputs')
 def outputDelete():
     if(not (isAuthorized())):
@@ -276,10 +276,10 @@ def outputDelete():
                 return 'Failed to remove drive', 400
         else :
             return 'Provided drive index is not valid', 400
-        
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description = 'Application server for SED Storage Visualiser')
-    parser.add_argument('--HTTP', 
+    parser.add_argument('--HTTP',
                         help='Launch the server without requirement for HTTPS (just keep in mind that security of authentication relies on HTTPS)',
                         action="store_true")
     args = parser.parse_args()

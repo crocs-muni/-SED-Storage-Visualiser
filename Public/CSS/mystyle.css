@@ -250,4 +250,3 @@ a:hover{
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(30%, 1fr));
 }
-

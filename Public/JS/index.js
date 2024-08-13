@@ -52,12 +52,11 @@ function filterPromise(index) {
 async function filterBySSCandFsets(filteredDrives) {
     let deepCopy = [...filteredDrives] // A deep copy is done here so that we don't slice an array over which we're looping
     for(let drive of filteredDrives) {
-        let index = parseInt(/\d+$/i.exec(drive)[0])  
+        let index = parseInt(/\d+$/i.exec(drive)[0])
         let result = await filterPromise(index)
         if(!result) {
             let driveIndex = deepCopy.indexOf(drive)
             deepCopy.splice(driveIndex, 1)
-            
         }
     }
     return deepCopy
@@ -89,7 +88,7 @@ async function filterByCriteria() {
     // by SSC and supported Fset
     filterBySSCandFsets(filteredDrives).then((list) => {
         for(let cbox of document.querySelectorAll(".devCBox")) {
-        
+
             if(list.includes(cbox.id)){
                 if(!cbox.checked){
                     cbox.checked = true
@@ -162,7 +161,7 @@ function setLockingVersion(device){
     if(parseInt(device["driveInfo"]["Discovery 0"]["Locking Feature"]["Version"]) != version) {
         let lockVerHTML = document.querySelector(`[id="Locking FeatureVersion"] .d${device["index"]}`);
         lockVerHTML.textContent += ` (${version})`;
-    }    
+    }
 }
 
 function checkPSIDpresence(device){
@@ -191,8 +190,8 @@ function setOpalMinorVer(device) {
             if(device["driveInfo"]["Discovery 0"]["Opal SSC V2 Feature"]["Version"] == 1) {
                 device["driveInfo"]["Discovery 0"]["Opal SSC V2 Feature"]["Minor Version"] = (findUID(device["driveInfo"]["Discovery 2"], "0x0000020400000007"))? 0 : 1
             }
-        }  
-    } 
+        }
+    }
 }
 
 /* Function fills the minor version row in SSC V2 Feature set based on other present sets
@@ -232,9 +231,9 @@ function checkOpal2MinorVer(device){
             else if(cluesDetected.indexOf(0) != -1 & selectedSSC == "Opal 2.00"){
                 versionDetected = 0;
             }
-            
+
             let minorVerNum = device["driveInfo"]["Discovery 0"]["Opal SSC V2 Feature"]["Minor Version"]
-            
+
             if(minorVerNum != versionDetected){
                 // Conflicts were found, print maximum found version and indicate discrepancy
                 if(versionDetected == -1){
@@ -254,7 +253,7 @@ function checkOpal2MinorVer(device){
         else{
             versionHTML.textContent = `${minorVerNum} (unknown)`;
             versionHTML.title += `\nVersion couldn't be properly guessed because Discovery 2 is missing in the device's analysis`
-        } 
+        }
     }
 }
 
@@ -349,11 +348,11 @@ function populateFilteringSection(){
         const store = transaction.objectStore("drives");
         let devList = document.getElementById("devList");
         devList.innerHTML = `<div class="devItem"><input type="checkbox" name="allDevs" data-cBoxCategory="devCBox" checked="true" id="allDevsCbox">All</div>`;
-    
+
         const request = store.openCursor();
         request.onsuccess = ((event) => {
             const cursor = event.target.result;
-            
+
             if(cursor){
                 let device = cursor.value;
                 let devItem = "<div class='devItem'>"
@@ -395,9 +394,9 @@ function populateFilteringSection(){
                                 cBox.dispatchEvent(new Event('change'))
                             }
                         });
-                    } 
+                    }
                 })
-                resolve();            
+                resolve();
             }
         });
         request.onerror = ((reason) => {
@@ -414,7 +413,7 @@ function setFsetAttrValue(device, fsetName, attrName, requiredValue){
     if(!(device["SSCCompl"]["foundFsets"].includes(fsetName))) {
         HTMLitem.innerHTML = `Missing`;
         HTMLitem.classList.add("missingBg");
-        return;        
+        return;
     }
     else {
         if(!(attrName in device["driveInfo"]["Discovery 0"][fsetName])) {
@@ -433,7 +432,7 @@ function setFsetAttrValue(device, fsetName, attrName, requiredValue){
                     console.error(`Error while parsing required SSC value. Check if the format in SSC definition is as follows: "atribute" : "operator value"`)
                     return;
                 }
-                
+
                 let op = requiredVal[0]
                 if(operators[op](parseInt(devValue), parseInt(requiredVal[1]))){
                     HTMLitem.innerHTML = `${devValue}`;
@@ -445,7 +444,7 @@ function setFsetAttrValue(device, fsetName, attrName, requiredValue){
                 }
             }
             else{
-                HTMLitem.innerHTML = `${devValue}`;        
+                HTMLitem.innerHTML = `${devValue}`;
             }
         }
     }
@@ -469,7 +468,7 @@ function populateTbody(device, featureSet){
             }
             // Fill features rows with values corresponding to each device
             setFsetAttrValue(device, fsetName, attribute, requiredVal);
-        }   
+        }
     }
 }
 
@@ -482,7 +481,7 @@ function renderCBoxes(){
             let devCells = document.getElementsByClassName(checkbox.id);
             for(let j = 0; j < devCells.length; j++){
                 let cell = devCells.item(j);
-                
+
                 if(!checkbox.checked){
                     cell.style.display = 'none';
                 }
@@ -500,7 +499,7 @@ function renderCBoxes(){
             let fSetRow = document.getElementsByClassName(checkbox.dataset.fset);
             for(let j = 0; j < fSetRow.length; j++){
                 let row = fSetRow.item(j);
-                
+
                 if(!checkbox.checked){
                     row.style.display = 'none';
                 }
@@ -515,7 +514,7 @@ function renderCBoxes(){
 /* Stores the drive into IndexedDB and returns a promise
  * Even failures lead to resolution because we don't want a single failure to stop everything
  * the failure is written into console so that it's noticed by the dev
- * 
+ *
  */
 function storeDrive(drive, indexNum){
     return new Promise((resolve, reject) => {
@@ -548,7 +547,7 @@ async function fetchDrive(filePath){
 
 function deleteMissingDrives(serverIndexes, storedIndexes){
     let removalPromises = []
-    
+
     for(let index of storedIndexes){
         if(serverIndexes.indexOf(index) < 0) {
             removalPromises.push(removeDriveFromStorage(index))
@@ -572,7 +571,7 @@ function getDrivesForUpdate(filelist) {
                 // This is done to conform with admin's way of numbering devices (at least to digits were always present)
                 let index = cursor.key.toLocaleString("en-US", {minimumIntegerDigits: 2})
                 let filename = `drive${index}.json`
-                
+
                 if(filename in filelist) {
                     // client creates local UTC timestamp after receiving file, so it can be newer than server's file timestamp
                     if(cursor.value["timeModified"] >= filelist[filename]) {
@@ -616,7 +615,7 @@ async function prepareDrives(filenames){
     for(let dev in storedDevs) {
         storedIndexes.push(parseInt(/.*d(\d+)$/.exec(dev)[1]))
     }
-    await Promise.all(deleteMissingDrives(serverIndexes, storedIndexes)) 
+    await Promise.all(deleteMissingDrives(serverIndexes, storedIndexes))
     return;
 }
 
@@ -682,7 +681,7 @@ async function generateTbody(tableName, featureSet){
             }
             tableBody.innerHTML += `${item}</tr>`;
         }
-    }  
+    }
 }
 
 function hideDrive(index){
@@ -690,7 +689,7 @@ function hideDrive(index){
     if(cbox.checked) {
         cbox.checked = false
         cbox.dispatchEvent(new Event('change'))
-    } 
+    }
 }
 
 async function checkDevCompliance(device){
@@ -737,7 +736,7 @@ function populateTables(){
     return new Promise((resolve, reject) => {
         const transaction = db.transaction("drives", "readwrite");
         const store = transaction.objectStore("drives");
-    
+
         const request = store.openCursor();
         request.onsuccess = ((event) => {
             const cursor = event.target.result;
@@ -758,7 +757,7 @@ function populateTables(){
         });
     });
 
-} 
+}
 
 function removeSSC(fileName) {
     let confirmation = confirm(`Are you sure you want to remove ${fileName}?`)
@@ -766,7 +765,7 @@ function removeSSC(fileName) {
         fetch(
             `/SSCs`,
             {
-                method : "DELETE", 
+                method : "DELETE",
                 headers: {"Content-Type": "application/json"},
                 body : JSON.stringify({"SSCfile" : fileName})
         })
@@ -778,7 +777,6 @@ function removeSSC(fileName) {
                 window.location.reload()
             }
         })
-        
     }
 }
 
@@ -824,7 +822,7 @@ function addDevice(){
             fetch(
                 `/outputs`,
                 {
-                    method : "POST", 
+                    method : "POST",
                     headers: {"Content-Type": "application/json"},
                     body : reader.result
             }
@@ -869,7 +867,7 @@ function removeDevice(index){
         fetch(
             `/outputs`,
             {
-                method : "DELETE", 
+                method : "DELETE",
                 headers: {"Content-Type": "application/json"},
                 body : JSON.stringify({"index" : index})
         })
@@ -959,7 +957,7 @@ function refetchhDB() {
                 console.log("Succesfully cleared all items from Indexddb metadata store")
                 window.location.reload()
             }
-            
+
             metadataRequest.onerror = () => {
                 alert("Failed to delete all items from the browser's database. Please try reloading the page")
             }
@@ -995,7 +993,7 @@ function elementIsInDropdown(element) {
     if(element.classList.contains("dropdownItems") || element.classList.contains("dropDownButton")) {
         return true
     }
-    
+
     try {
         while(element.parentNode.classList) {
             element = element.parentNode
@@ -1045,8 +1043,6 @@ document.getElementById("devButton").addEventListener("click", (event) => {
     else {
         devContainer.style.display = "none"
     }
-
-    
 })
 
 document.body.addEventListener("click", (event) => {
@@ -1075,7 +1071,6 @@ document.getElementById("filterButton").addEventListener("click", (event) => {
     else {
         filterContainer.style.display = "none"
     }
-
 })
 
 function showItem(elementName) {
