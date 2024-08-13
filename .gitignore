@@ -1,0 +1,5 @@
+Public/Outputs/*.json
+Public/Metadata/*.json
+.venv/
+.env
+*~
