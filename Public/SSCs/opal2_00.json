@@ -1,7 +1,7 @@
 {
     "SSC" : "Opal",
     "SSC name" : "Opal 2.00",
-    "SSC fset" : "Opal SSC V2 Feature",  
+    "SSC fset" : "Opal SSC V2 Feature",
     "mandatory" : {
         "TPer Feature" : [
             "Version",
@@ -11,7 +11,7 @@
             "ACK/NAK Supported",
             "Async Supported",
             {"Sync Supported" : "= 1"}
-        ], 
+        ],
         "Locking Feature": [
             {"Version" : ">= 1"},
             "MBR Done",
@@ -20,7 +20,7 @@
             "Locked",
             "Locking Enabled",
             {"Locking Supported" : "= 1"}
-        ], 
+        ],
         "Opal SSC V2 Feature": [
             "Version",
             {"Minor Version" : "= 0"},
@@ -31,7 +31,7 @@
         {"Number of Locking SP User Authorities Supported" : ">= 8"},
             "Initial C_PIN_SID PIN Indicator",
             "Behavior of C_PIN_SID PIN upon TPer Revert"
-        ], 
+        ],
         "DataStore Table Feature": [
             "Version",
             {"Maximum number of DataStore tables" : ">= 1"},
@@ -53,7 +53,7 @@
             "LogicalBlockSize",
             "AlignmentGranularity",
             "LowestAlignedLBA"
-        ], 
+        ],
         "Single User Mode Feature": [
             "Version",
             "Number of Locking Objects Supported",

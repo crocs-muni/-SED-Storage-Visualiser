@@ -23,27 +23,27 @@ function getSelectedDev(){
     return new Promise((resolve, reject) => {
 
         const dbReq = indexedDB.open("storageDevs", 1);
-    
+
         dbReq.onerror = ((event) => {
             alert("Failed to open internal indexedDB\n", event);
         })
-    
+
         dbReq.onupgradeneeded = ((event) => {
             db = dbReq.result;
             const store = db.createObjectStore("drives", {keyPath : "index"});
             const metadata = db.createObjectStore("metadata", {autoIncrement : true});
             store.createIndex("indexCursor", ["index"], {unique : true});
         });
-    
+
         dbReq.onsuccess = ((event) => {
             db = dbReq.result;
             let query = window.location.search;
             let params = new URLSearchParams(query);
             driveIndex = parseInt(params.get("dev"));
-            
+
             const transaction = db.transaction("drives", "readonly");
             const store = transaction.objectStore("drives");
-        
+
             const request = store.get(driveIndex);
             request.onsuccess = ((event) => {
                 devInfo = request.result;
@@ -80,7 +80,7 @@ function printSessionInfo(){
                 }
                 else {
                     TPerElement.innerHTML += `<p><b>${field}</b> : ${SessionInfo[field]}</p>`;
-                }    
+                }
             }
         }
         for(field in SessionInfo){
@@ -127,7 +127,7 @@ function saveToServer(mdJSON){
         fetch(
             `/metadata`,
             {
-                method : "POST", 
+                method : "POST",
                 headers: {"Content-Type": "application/json"},
                 body : JSON.stringify({"index" : devInfo["index"], action : "addMetadata", "metadata" : mdJSON})
         }
@@ -143,7 +143,6 @@ function saveToServer(mdJSON){
             }
         })
     })
-
 }
 
 function removeFromServer(mdIndex){
@@ -151,7 +150,7 @@ function removeFromServer(mdIndex){
         fetch(
             `/metadata`,
             {
-                method : "POST", 
+                method : "POST",
                 headers: {"Content-Type": "application/json"},
                 body : JSON.stringify({"index" : devInfo["index"], action : "remMetadata", "mdIndex" : `${mdIndex}`})
         }
@@ -173,7 +172,7 @@ function removeMetadata(mdIndex){
         removeFromServer(mdIndex).then(() => {
             const transaction = db.transaction("metadata", "readwrite");
             const store = transaction.objectStore("metadata");
-    
+
             const request = store.openCursor(devInfo["index"]);
             request.onsuccess = (event) => {
                 let cursor = event.target.result;
@@ -245,12 +244,12 @@ function printMetadata(){
                     if(content["filename"]){
                         entry += `<p>Filename: ${content["filename"]}</p>`;
                         entry += `<pre>${content["content"]}</pre>`;
-                        
+
                     }
-                    
+
                     entry += `</div></div>`
                     mdHTML.innerHTML += entry
-                    
+
                 });
             }
             resolve()
@@ -260,7 +259,6 @@ function printMetadata(){
             reject()
         }
     })
-    
 }
 
 function saveMetadata(){
@@ -299,7 +297,7 @@ function saveMetadata(){
         saveToServer(data).then(() => {
             window.location.reload()
         })
-    }   
+    }
 }
 
 function fetchMetadata(){
@@ -316,7 +314,7 @@ function fetchMetadata(){
                     response.json().then((metadata) => {
                         saveToStore(metadata).then(() => {
                             resolve()
-                        }) 
+                        })
                         .catch(() => {
                             console.error(`Failed during fetching of metadata`)
                             reject()

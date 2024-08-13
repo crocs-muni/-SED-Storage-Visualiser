@@ -1,7 +1,7 @@
 {
     "SSC" : "Pyrite",
     "SSC name" : "Pyrite 2.01",
-    "SSC fset" : "Pyrite SSC V2 Feature",  
+    "SSC fset" : "Pyrite SSC V2 Feature",
     "mandatory" : {
         "TPer Feature": [
             "Version",
@@ -55,7 +55,7 @@
             "LogicalBlockSize",
             "AlignmentGranularity",
             "LowestAlignedLBA"
-        ], 
+        ],
         "Single User Mode Feature": [
             "Version",
             "Number of Locking Objects Supported",
