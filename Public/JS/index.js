@@ -490,6 +490,10 @@ function renderCBoxes(){
                 }
             }
         }
+        // Clear search text input if user explicitly (de)selected a device
+        checkbox.onclick = () => {
+            document.getElementById("searchDev").value = ""
+        }
     }
     // Filtration based on Feature Sets
     let fSetBoxes = document.getElementsByClassName("staticFsetCBox");
@@ -1053,6 +1057,10 @@ document.body.addEventListener("click", (event) => {
             element.style.display = "none"
         }
     }
+})
+
+document.getElementById("searchDev").addEventListener("keyup", (event) => {
+    if(event.code == 'Enter') filterByCriteria()
 })
 
 document.getElementById("filterButton").addEventListener("click", (event) => {
