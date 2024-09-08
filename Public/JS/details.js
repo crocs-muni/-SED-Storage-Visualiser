@@ -16,6 +16,8 @@ const TPerManFields = {
     "DefSessionTimeout" : 0
 }
 
+const allowedMIME = ["text/plain", "text/csv", "text/markdown", "text/xml", "application/json"]
+
 var devInfo;
 var db;
 
@@ -240,7 +242,7 @@ function printMetadata(){
                     if(content["name"]) entry += `<div style="display: flex; flex-direction: row;"><h4>${content["name"]}</h4>`
                     entry += `<button style="display: none;" class="authorized" id="remMDBut" onclick=removeMetadata(${index})>Remove</button></div>`
                     if(content["notes"]) entry += `<p>Notes: ${content["notes"]}</p>`
-                    if(content["url"]) entry += `<p>URL: <a href="//${content["url"]}">${content["url"]}</a></p>`
+                    if(content["url"]) entry += `<p>URL: <a href="${content["url"]}">${content["url"]}</a></p>`
                     if(content["filename"]){
                         entry += `<p>Filename: ${content["filename"]}</p>`;
                         entry += `<pre>${content["content"]}</pre>`;
@@ -266,8 +268,27 @@ function saveMetadata(){
     let inputFile = document.getElementById("mdFile");
     let note = document.getElementById("mdText").value;
     let urlContent = document.getElementById("mdUrl").value;
+
+    if(urlContent.length > 0) {
+        // No protocol specified, add https to enforce absolute link recognition in href
+        if(urlContent.indexOf("://") == -1) {
+            urlContent = `https://${urlContent}`
+        }
+    }
+
     if(inputFile.files.length > 0){
         let file = inputFile.files[0];
+
+        if((file.size / 1024**2) > 20) {
+            alert("Only files below 20MB are allowed")
+            return
+        }
+
+        if(!allowedMIME.includes(file.type)) {
+            alert(`${file.type} isn't allowed. The following formats are allowed:\n${allowedMIME}`)
+            return
+        }
+
         let reader = new FileReader();
         reader.readAsText(file);
         reader.onload = () => {
@@ -346,8 +367,15 @@ function clearMDFields() {
     document.getElementById("mdFile").value = ""
 }
 
+function updateMDFileHint() {
+    let hintHTML = document.getElementById("fileHint")
+    hintHTML.title = "Only files up to 20MB are allowed. Larger files can be stored elsewhere and pointed to by URL.\n"
+    hintHTML.title += `Also, only the following file formats are allowed at the moment:\n${allowedMIME.join("\n")}`
+}
+
 getSelectedDev().then(() => {
     clearMDFields()
+    updateMDFileHint()
     printDetails();
     printDriveJSON();
     fetchMetadata()
